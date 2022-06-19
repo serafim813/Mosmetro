@@ -1,0 +1,1 @@
+*/10 * * * * root python /app/task/update_news.py

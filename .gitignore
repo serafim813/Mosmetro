@@ -1,0 +1,21 @@
+# Compiled Python Code
+*.pyc
+
+# PyCharm
+.idea
+
+# VirtualEnv
+.venv
+
+# PyTest
+.pytest_cache
+
+# .env_variables
+.env
+
+# database database
+/data
+
+# logger
+
+debug.log
