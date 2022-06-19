@@ -1,5 +1,4 @@
 from typing import List, Dict
-from datetime import date, datetime
 from sqlalchemy import select, delete
 from sqlalchemy.future import Engine
 import sqlalchemy as sa
