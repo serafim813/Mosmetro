@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup as BS
 import re
 
+
 def parser_news(url):
     if url:
         resp = requests.get(url)
@@ -15,17 +16,22 @@ def parser_news(url):
                 for li in li_lst:
                     headers = li.find_all('font', attrs={'size': '3'})
                     a = []
+                    c = []
+                    k = dict.fromkeys(['id', 'header', 'image', 'date', 'item'])
                     for i in range(len(headers)):
                         a.append([])
+                        c.append(k)
                     cnt = 0
                     for header in headers:
                         headline = header.find_all('a')
                         sentence = str(headline[0]).split('>')[0]
                         s = [int(s) for s in re.findall(r'-?\d+\.?\d*', sentence)]
                         a[cnt].append(s[0])
+                        c[cnt]['id'] = s[0]
                         news = header.find_all('b')
                         news = re.sub(r'"', "'", str(news[0]))
                         a[cnt].append(re.sub(r'\<[^>]*\>', '', news))
+                        c[cnt]['header'] = re.sub(r'\<[^>]*\>', '', news)
                         cnt += 1
 
                     images = li.find_all('td', attrs={'width': '90'})
@@ -34,13 +40,14 @@ def parser_news(url):
                         img = image.find_all('img', attrs={'width': '80'})
                         img = str(img).split(' ')
                         if len(img) > 1:
-                          img=img[3]
-                          img = img[5:28]
-                          img = 'http://mosday.ru/news/' + str(img)
+                            img = img[3]
+                            img = img[5:28]
+                            img = 'http://mosday.ru/news/' + str(img)
                         else:
                             img = ''
-                        if cnt < 25:
+                        if cnt < len(headers):
                             a[cnt].append(img)
+                            c[cnt]['image'] = img
                         cnt += 1
 
                     times = li.find_all('font', attrs={'face': 'Arial'})
@@ -49,7 +56,9 @@ def parser_news(url):
                         time = time.find('b')
                         time = re.sub(r'\<[^>]*\>', '', str(time))
                         a[cnt].append(time)
+                        c[cnt]['date'] = time
                         cnt += 1
+                    #print(c)
 
                     items = li.find_all('font', attrs={'face': 'Times New Roman'})
                     cnt = 0
@@ -58,6 +67,8 @@ def parser_news(url):
                         item = re.sub(r'\<[^>]*\>', '', str(item[0]))
                         item = re.sub(r'"', "'", item)
                         a[cnt].append(item)
+                        c[cnt]['item'] = item
                         cnt += 1
-                    b.append(a)
+                    b.append(c)
+
     return b
