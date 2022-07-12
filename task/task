@@ -1,1 +1,1 @@
-*/10 * * * * root python /app/task/update_news.py
+*/1 * * * * /Users/serafim/PycharmProjects/Task_Bewise-master/bin/python3 /Users/serafim/mosmetro/Mosmetro/task/update_news.py

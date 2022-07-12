@@ -31,16 +31,19 @@ class UserService:
         url = 'http://mosday.ru/news/tags.php?metro'
         all_news = parser_news(url)
         github = Jservice(self._engine)
+
         all_id_news = UserService.get_all_id_news(self)
+        #print(type(all_id_news))
         for all_new in all_news:
             for news in all_new:
-                if news[0] not in all_id_news:
+                #print(type(all_new))
+                if news['id'] not in all_id_news:
                     github.push_news_in_database(answer=StatsAddV12(
-                                id=news[0],
-                                header=news[1],
-                                image=news[2],
-                                date=str(datetime.strptime(news[3], "%d.%m.%Y").date()),
-                                item=news[4],
+                                id=news['id'],
+                                header=news['header'],
+                                image=news['image'],
+                                date=str(datetime.strptime(news['date'], "%d.%m.%Y").date()),
+                                item=news['item'],
                     ))
 
     def get_news(self, id) -> List[StatsAddV1]:
@@ -49,15 +52,15 @@ class UserService:
         date_from: date = (datetime.now() - timedelta(days=id)).date(),
         date_to: date = (datetime.now()).date(),
         query = select(tables.news).where(
-                tables.news.c.date.between(date_from, date_to)
-        )
+                 tables.news.c.date.between(date_from, date_to)
+         )
 
         with self._engine.connect() as connection:
             news = connection.execute(query)
         return [StatsAddV1(
-                            header=new[1],
-                            image=new[2],
-                            date=str(new[3]),
+                            header=new['header'],
+                            image=new['image'],
+                            date=str(new['date']),
         ) for new in news
         ]
 

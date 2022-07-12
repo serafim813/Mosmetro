@@ -8,6 +8,8 @@ from src.database import create_database_url
 from src.api.protocols import UserServiceProtocol
 from fastapi import Depends
 from src.user.service import UserService
+import schedule
+import time
 
 engine = sa.create_engine(
         create_database_url(),
@@ -16,10 +18,16 @@ engine = sa.create_engine(
 service = UserService(engine)
 logger.info("Start update!!!")
 
-def add_answer(
-    #user_service: UserServiceProtocol = Depends()
-):
+
+
+def add_answer():
     return service.get_all_news()
+
+schedule.every(10).minutes.do(add_answer)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
 logger.info("Finish update!!!")
 

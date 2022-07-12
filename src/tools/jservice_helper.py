@@ -7,7 +7,7 @@ from src.database import tables
 
 class Jservice:
     """Class for push news"""
-    
+
     def __init__(self, engine: Engine) -> None:
         self._engine = engine
 
@@ -19,6 +19,9 @@ class Jservice:
             date=answer.date,
             item=answer.item,
         )
+        with self._engine.connect() as connection:
+            connection.execute(query)
+            connection.commit()
         with self._engine.connect() as connection:
             connection.execute(query)
             connection.commit()
